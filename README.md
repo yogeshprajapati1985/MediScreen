@@ -1,0 +1,2 @@
+# MediScreen
+MediScreen springboot application.
