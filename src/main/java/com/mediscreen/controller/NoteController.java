@@ -8,6 +8,7 @@ import com.mediscreen.model.Note;
 import com.mediscreen.service.NoteService;
 import com.mediscreen.service.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -54,5 +55,12 @@ public class NoteController {
 
         List<NoteResource> notes = noteService.findByPatId(patId);
         return ResponseEntity.ok(new PatientHistoryResource(patientResource, notes));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Note> updateNote(@RequestParam ObjectId id, @RequestParam String note) {
+        Note existingNote = noteService.findById(id);
+        existingNote.setNote(note); // preserves whitespace
+        return ResponseEntity.ok(noteService.save(existingNote));
     }
 }
