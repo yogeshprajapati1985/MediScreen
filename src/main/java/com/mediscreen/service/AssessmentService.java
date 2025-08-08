@@ -1,35 +1,44 @@
 package com.mediscreen.service;
 
 import com.mediscreen.constant.MediscreenConstants;
-import com.mediscreen.model.Note;
+import com.mediscreen.dto.NoteResource;
+import com.mediscreen.dto.PatientHistoryResource;
+import com.mediscreen.exception.PatientNotFoundException;
 import com.mediscreen.util.MediscreenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class AssessmentService {
 
-    private final NoteService noteService;
-    private final PatientService patientService;
+    private final WebClient webClient;
 
-    public String assess(String patId) {
+    public String assess(Long patId) {
 
-        // Fetch patient details
-        var patientOpt = patientService.getPatientById(Long.parseLong(patId));
-        if (patientOpt.isEmpty()) {
-            return "Patient not found with ID: " + patId;
-        }
-        var patient = patientOpt.get();
+        PatientHistoryResource patientHistoryResource = webClient.get()
+                .uri("/patHistory/get/{patId}", patId)
+                .retrieve()
+                .onStatus(HttpStatus.NOT_FOUND::equals, clientResponse ->
+                        Mono.error(new PatientNotFoundException("Patient not found with id: " + patId)))
+                .bodyToMono(PatientHistoryResource.class)
+                .block();
 
-        List<Note> noteList = noteService.findByPatId(patId); // Fetch notes for the patient
+
+        var patient = Objects.requireNonNull(patientHistoryResource).getPatient();
+
+        List<NoteResource> noteList = patientHistoryResource.getNotes();
         if (noteList.isEmpty()) {
             return "No notes found for patient ID: " + patId;
         } else {
             int triggerCount = 0;
-            for (Note note : noteList) {
+            for (NoteResource note : noteList) {
                 String content = note.getNote().toLowerCase();
                 // Count the number of trigger terms in the note content from constants
                 triggerCount += MediscreenUtil.countMatchingTerms(content, MediscreenConstants.TRIGGER_TERMS);

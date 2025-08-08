@@ -15,7 +15,7 @@ public class AssessmentController {
     private final AssessmentService assessmentService;
 
     @PostMapping("/{patId}")
-    public ResponseEntity<String> assessPatientById(@PathVariable String patId) {
+    public ResponseEntity<String> assessPatientById(@PathVariable Long patId) {
         return ResponseEntity.ok(assessmentService.assess(patId));
     }
 }

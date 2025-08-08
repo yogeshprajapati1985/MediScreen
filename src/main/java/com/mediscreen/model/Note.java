@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Note {
     @Id
     private String id;
-    private String patId;
+    private Long patId;
     @Lob // Ensures large text is handled
     private String note;
     private LocalDateTime createdAt = LocalDateTime.now();

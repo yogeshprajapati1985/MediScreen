@@ -1,6 +1,8 @@
 package com.mediscreen.mapper;
 
+import com.mediscreen.dto.NoteResource;
 import com.mediscreen.dto.PatientResource;
+import com.mediscreen.model.Note;
 import com.mediscreen.model.Patient;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,5 +30,7 @@ public interface PatientMapper {
     @Mapping(target = "family", source = "familyName")
     @Mapping(target = "dob", source = "dob", dateFormat = "yyyy-MM-dd")
     PatientResource toPatientResource(Patient patient);
+
+    NoteResource toNoteResource(Note note);
 }
 
