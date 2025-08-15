@@ -36,19 +36,25 @@ Ensure you have the following installed:
 - Git
 - Docker
 
-### 3. Build the Project
+### 3. Build the Jar
 Navigate to the project directory and run the following command to build the project:
 ```bash
-mvn clean install
+mvn clean package
 ```
 This command will compile the code, run tests, and package the application into a JAR file.
 
-### 4. Run the Application
-You can run the application using the following command:
+### 4. Build the Docker Image
+You can build a Docker image for the application. Ensure you have Docker installed and running, then execute the following command in the project root directory:
 ```bash
-mvn spring-boot:run
+docker build -t mediscreen .
 ```
 
-### 5. Access the Application
+#### 5. Run the compose.yml
+If you have Docker Compose installed, you can run the application using the provided `compose.yml` file. Execute the following command:
+```bash
+docker-compose -f compose.yml up --build
+```
+
+### 6. Access the Application
 Once running, the application will be available at:
 http://localhost:8080
