@@ -23,7 +23,22 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-
+  mediscreen:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mediscreen
+    restart: always
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mediscreen'
+      - 'SPRING_DATASOURCE_USERNAME=yogi'
+      - 'SPRING_DATASOURCE_PASSWORD=prajapati'
+      - 'SPRING_DATA_MONGODB_URI=mongodb://yogi:prajapati@mongo:27017/medical_notes?authSource=admin'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - mongo
 volumes:
   pgdata:
   mongo-data:
